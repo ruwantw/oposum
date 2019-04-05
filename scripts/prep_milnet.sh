@@ -17,8 +17,10 @@ if [ ! -f ./w2v/GoogleNews-vectors-negative300.bin ]; then
     mv GoogleNews-vectors-negative300.bin ./w2v
 fi
 
+echo 'Removing EDU_BREAK from the input file...'
 cat data/train/"$domain".trn | sed -e $'s/ EDU_BREAK /\\\n/g' > data/train/"$domain"-edus.trn
 
+echo 'Running prep/hier_hdf5.py...'
 ./scripts/prep_hier_hdf5.py \
     --w2v ./w2v/GoogleNews-vectors-negative300.bin \
     --name ./data/preprocessed/"$upper"_MILNET \
@@ -32,4 +34,4 @@ echo
     --name ./data/preprocessed/"$upper"_MILNET_TEST \
     --vocab ./data/preprocessed/"$upper"_MILNET_word_mapping.txt
 
-rm data/train/"$domain"-edus.trn
+#rm data/train/"$domain"-edus.trn

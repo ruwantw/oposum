@@ -106,6 +106,9 @@ function build_model(w2v)
 
   if opt.warm_start_model == '' then
     model = model_builder:make_net()
+	f_model = io.open (opt.model .. '.network', 'w')
+	f_model:write (tostring (model))
+	f_model:close ()
   else
     require "nngraph"
     if opt.cudnn == 1 then

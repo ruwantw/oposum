@@ -100,13 +100,14 @@ function Trainer:train(train_data, train_labels, model, criterion, optim_method,
         -- forward pass
         local outputs = model:forward(inputs)
         local err = criterion:forward(outputs, targets)
-
+		
         -- track errors and confusion
         total_err = total_err + err * cur_batch_size
         for j = 1, cur_batch_size do
           confusion:add(outputs[j], targets[j])
         end
 
+		print ('total err = ', total_err)
         -- compute gradients
         local df_do = criterion:backward(outputs, targets)
         model:backward(inputs, df_do)
@@ -118,12 +119,17 @@ function Trainer:train(train_data, train_labels, model, criterion, optim_method,
 
         model:clearState()
         if i % opt.cgfreq == 0 and s == 1 then collectgarbage() end
-
+		
+		print ('returning error and gradients')
         return err, grads
       end
 
       -- gradient descent
+	  print ('\nbefore running optim method')
+	  print ('\nconfig: ',  config)
+	  print ('\nstate: ', state)
       optim_method(func, params, config, state)
+	  print ('after running optim method')
 
       -- reset padding embedding to zero
       layers.w2v.weight[1]:zero()
